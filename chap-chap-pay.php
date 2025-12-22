@@ -58,14 +58,5 @@ function chapchap_enqueue_scripts() {
         return;
     }
 
-    // Enregistrer le script pour les blocks
-    wp_register_script(
-        'chapchap-pay-blocks',
-        plugins_url('assets/js/blocks.js', __FILE__),
-        array('wc-blocks-registry', 'wc-settings', 'wp-element', 'wp-i18n', 'wp-api-fetch'),
-        '1.0.1',
-        true
-    );
-
-    wp_enqueue_script('chapchap-pay-blocks');
+    // Enregistrement du script pour les blocks supprimé car déjà fait dans ccp-gateway-blocks.php
 }
