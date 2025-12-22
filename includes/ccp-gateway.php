@@ -331,26 +331,30 @@ class WC_Gateway_Chap_Chap_Pay extends WC_Payment_Gateway
                             $operation_id)
                         );
                         
-                        update_post_meta($order_id, 'Chap Chap Pay Operation ID', $operation_id);
-                        update_post_meta($order_id, 'Chap Chap Pay Payment Method', $payment_method);
-                        update_post_meta($order_id, 'Chap Chap Pay Payment Status', $status);
+                        $order->update_meta_data('Chap Chap Pay Operation ID', $operation_id);
+                        $order->update_meta_data('Chap Chap Pay Payment Method', $payment_method);
+                        $order->update_meta_data('Chap Chap Pay Payment Status', $status);
+                        $order->save();
                         break;
 
                     case 'failed':
                         $order->update_status('failed', __('Paiement ChapChapPay échoué.', 'chap-chap-pay'));
-                        update_post_meta($order_id, 'Chap Chap Pay Payment Status', 'failed');
+                        $order->update_meta_data('Chap Chap Pay Payment Status', 'failed');
+                        $order->save();
                         break;
 
                     case 'canceled':
                         $order->update_status('cancelled', __('Paiement ChapChapPay annulé.', 'chap-chap-pay'));
-                        update_post_meta($order_id, 'Chap Chap Pay Payment Status', 'canceled');
+                        $order->update_meta_data('Chap Chap Pay Payment Status', 'canceled');
+                        $order->save();
                         break;
 
                     case 'pending':
                         $order->update_status('pending',
                             sprintf(__('Paiement ChapChapPay en attente. Operation: %s', 'chap-chap-pay'), $operation_id)
                         );
-                        update_post_meta($order_id, 'Chap Chap Pay Payment Status', 'pending');
+                        $order->update_meta_data('Chap Chap Pay Payment Status', 'pending');
+                        $order->save();
                         break;
 
                     default:
