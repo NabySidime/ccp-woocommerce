@@ -278,7 +278,7 @@ class WC_Gateway_Chap_Chap_Pay extends WC_Payment_Gateway
     public function check_response()
     {
         $hmac_signature = $_SERVER['HTTP_CCP_HMAC_SIGNATURE'] ?? '';
-        $api_key_header = $_SERVER['HTTP_CCP_API_KEY'] ?? '';
+        $api_key_header = isset($_SERVER['HTTP_CCP_API_KEY']) ? sanitize_text_field($_SERVER['HTTP_CCP_API_KEY']) : '';
         $payload = file_get_contents('php://input');
         $data = json_decode($payload, true);
 
