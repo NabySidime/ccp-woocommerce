@@ -226,9 +226,10 @@ class WC_Gateway_Chap_Chap_Pay extends WC_Payment_Gateway
             
             // Sauvegarder les métadonnées
             if (isset($response_data['operation_id'])) {
-                update_post_meta($order_id, 'Chap Chap Pay Operation ID', $response_data['operation_id']);
+                $order->update_meta_data('Chap Chap Pay Operation ID', $response_data['operation_id']);
             }
-            update_post_meta($order_id, 'Chap Chap Pay Formatted Order ID', $chapchap_order_id);
+            $order->update_meta_data('Chap Chap Pay Formatted Order ID', $chapchap_order_id);
+            $order->save();
             
             $order->add_order_note(
                 sprintf(__('Paiement ChapChapPay initié - Montant: %s GNF - OrderID: %s', 'chap-chap-pay'),
