@@ -37,18 +37,16 @@ function chap_chap_pay_init()
     });
 
     // Support pour WooCommerce Blocks
-    add_action('woocommerce_blocks_loaded', 'chapchap_register_blocks_support');
-}
-
-function chapchap_register_blocks_support() {                                                                                                                                                                                                                                                                                                                                                                                                                                                   //211101-071104
-    // Inclure la classe blocks
-    require_once plugin_dir_path(__FILE__) . 'includes/ccp-gateway-blocks.php';
-    
-    // Enregistrer la méthode de paiement pour les blocks
-    add_action('woocommerce_blocks_payment_method_type_registration', function($payment_method_registry) {
-        if (class_exists('WC_Gateway_Chap_Chap_Pay_Blocks')) {
-            $payment_method_registry->register(new WC_Gateway_Chap_Chap_Pay_Blocks());
-        }
+    add_action('woocommerce_blocks_loaded', function() {
+        // Inclure la classe blocks
+        require_once plugin_dir_path(__FILE__) . 'includes/ccp-gateway-blocks.php';
+        
+        // Enregistrer la méthode de paiement pour les blocks
+        add_action('woocommerce_blocks_payment_method_type_registration', function($payment_method_registry) {
+            if (class_exists('WC_Gateway_Chap_Chap_Pay_Blocks')) {
+                $payment_method_registry->register(new WC_Gateway_Chap_Chap_Pay_Blocks());
+            }
+        });
     });
 }
 
