@@ -226,10 +226,9 @@ class WC_Gateway_Chap_Chap_Pay extends WC_Payment_Gateway
             
             // Sauvegarder les métadonnées
             if (isset($response_data['operation_id'])) {
-                $order->update_meta_data('Chap Chap Pay Operation ID', $response_data['operation_id']);
+                update_post_meta($order_id, 'Chap Chap Pay Operation ID', $response_data['operation_id']);
             }
-            $order->update_meta_data('Chap Chap Pay Formatted Order ID', $chapchap_order_id);
-            $order->save();
+            update_post_meta($order_id, 'Chap Chap Pay Formatted Order ID', $chapchap_order_id);
             
             $order->add_order_note(
                 sprintf(__('Paiement ChapChapPay initié - Montant: %s GNF - OrderID: %s', 'chap-chap-pay'),
@@ -278,7 +277,7 @@ class WC_Gateway_Chap_Chap_Pay extends WC_Payment_Gateway
     public function check_response()
     {
         $hmac_signature = $_SERVER['HTTP_CCP_HMAC_SIGNATURE'] ?? '';
-        $api_key_header = isset($_SERVER['HTTP_CCP_API_KEY']) ? sanitize_text_field($_SERVER['HTTP_CCP_API_KEY']) : '';
+        $api_key_header = $_SERVER['HTTP_CCP_API_KEY'] ?? '';
         $payload = file_get_contents('php://input');
         $data = json_decode($payload, true);
 
@@ -331,30 +330,26 @@ class WC_Gateway_Chap_Chap_Pay extends WC_Payment_Gateway
                             $operation_id)
                         );
                         
-                        $order->update_meta_data('Chap Chap Pay Operation ID', $operation_id);
-                        $order->update_meta_data('Chap Chap Pay Payment Method', $payment_method);
-                        $order->update_meta_data('Chap Chap Pay Payment Status', $status);
-                        $order->save();
+                        update_post_meta($order_id, 'Chap Chap Pay Operation ID', $operation_id);
+                        update_post_meta($order_id, 'Chap Chap Pay Payment Method', $payment_method);
+                        update_post_meta($order_id, 'Chap Chap Pay Payment Status', $status);
                         break;
 
                     case 'failed':
                         $order->update_status('failed', __('Paiement ChapChapPay échoué.', 'chap-chap-pay'));
-                        $order->update_meta_data('Chap Chap Pay Payment Status', 'failed');
-                        $order->save();
+                        update_post_meta($order_id, 'Chap Chap Pay Payment Status', 'failed');
                         break;
 
                     case 'canceled':
                         $order->update_status('cancelled', __('Paiement ChapChapPay annulé.', 'chap-chap-pay'));
-                        $order->update_meta_data('Chap Chap Pay Payment Status', 'canceled');
-                        $order->save();
+                        update_post_meta($order_id, 'Chap Chap Pay Payment Status', 'canceled');
                         break;
 
                     case 'pending':
                         $order->update_status('pending',
                             sprintf(__('Paiement ChapChapPay en attente. Operation: %s', 'chap-chap-pay'), $operation_id)
                         );
-                        $order->update_meta_data('Chap Chap Pay Payment Status', 'pending');
-                        $order->save();
+                        update_post_meta($order_id, 'Chap Chap Pay Payment Status', 'pending');
                         break;
 
                     default:

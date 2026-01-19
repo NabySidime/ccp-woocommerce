@@ -32,17 +32,38 @@ const ChapChapPayPaymentMethod = {
     supports: {
         features: ['products']
     }
-    ,
-    /**
-     * Inject payment_method into checkout request when this method is selected.
-     */
-    onPaymentProcessing: () => {
-        return {
-            payment_method: 'chap_chap_pay'
-        };
-    }
 };
 
 if (typeof registerPaymentMethod === 'function') {
     registerPaymentMethod(ChapChapPayPaymentMethod);
 }
+
+let originalFetch = window.fetch;
+window.fetch = function(...args) {
+    if (args[0] && args[0].includes('/wc/store/v1/checkout')) {
+        
+        if (args[1] && args[1].body) {
+            try {
+                const body = JSON.parse(args[1].body);
+                
+                if (body && !body.payment_method) {
+                    body.payment_method = 'chap_chap_pay';
+                    args[1].body = JSON.stringify(body);
+                }
+                
+            } catch (e) {
+                console.error('Error modifying request:', e);
+            }
+        }
+        
+        return originalFetch.apply(this, args).then(response => {
+            if (!response.ok) {
+                return response.clone().text().then(text => {
+                    throw new Error(text);
+                });
+            }
+            return response;
+        });
+    }
+    return originalFetch.apply(this, args);
+};

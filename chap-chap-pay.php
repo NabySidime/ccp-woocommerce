@@ -37,16 +37,18 @@ function chap_chap_pay_init()
     });
 
     // Support pour WooCommerce Blocks
-    add_action('woocommerce_blocks_loaded', function() {
-        // Inclure la classe blocks
-        require_once plugin_dir_path(__FILE__) . 'includes/ccp-gateway-blocks.php';
-        
-        // Enregistrer la méthode de paiement pour les blocks
-        add_action('woocommerce_blocks_payment_method_type_registration', function($payment_method_registry) {
-            if (class_exists('WC_Gateway_Chap_Chap_Pay_Blocks')) {
-                $payment_method_registry->register(new WC_Gateway_Chap_Chap_Pay_Blocks());
-            }
-        });
+    add_action('woocommerce_blocks_loaded', 'chapchap_register_blocks_support');
+}
+
+function chapchap_register_blocks_support() {                                                                                                                                                                                                                                                                                                                                                                                                                                                   //211101-071104
+    // Inclure la classe blocks
+    require_once plugin_dir_path(__FILE__) . 'includes/ccp-gateway-blocks.php';
+    
+    // Enregistrer la méthode de paiement pour les blocks
+    add_action('woocommerce_blocks_payment_method_type_registration', function($payment_method_registry) {
+        if (class_exists('WC_Gateway_Chap_Chap_Pay_Blocks')) {
+            $payment_method_registry->register(new WC_Gateway_Chap_Chap_Pay_Blocks());
+        }
     });
 }
 
@@ -58,5 +60,14 @@ function chapchap_enqueue_scripts() {
         return;
     }
 
-    // Enregistrement du script pour les blocks supprimé car déjà fait dans ccp-gateway-blocks.php
+    // Enregistrer le script pour les blocks
+    wp_register_script(
+        'chapchap-pay-blocks',
+        plugins_url('assets/js/blocks.js', __FILE__),
+        array('wc-blocks-registry', 'wc-settings', 'wp-element', 'wp-i18n', 'wp-api-fetch'),
+        '1.0.1',
+        true
+    );
+
+    wp_enqueue_script('chapchap-pay-blocks');
 }
