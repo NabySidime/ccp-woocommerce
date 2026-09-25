@@ -64,11 +64,6 @@ class CCP_Ajax_Handler {
             // Données pour l'API ChapChapPay
             $data = array(
                 'amount' => floatval($order->get_total()),
-                'description' => 'Commande ' . $order->get_order_number(),
-                'order_id' => (string) $order_id,
-                'notify_url' => $gateway->notify_url . '&ajax=1',
-                'return_url' => $gateway->get_return_url($order) . '&ajax=1',
-                'cancel_url' => $order->get_cancel_order_url() . '&ajax=1'
             );
             
             $headers = array(

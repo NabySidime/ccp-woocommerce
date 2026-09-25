@@ -179,14 +179,9 @@ class WC_Gateway_Chap_Chap_Pay extends WC_Payment_Gateway
             );
         }
 
-        // Données pour l'API ChapChapPay
+        // Données pour l'API ChapChapPay - amount uniquement (seul champ requis)
         $data = array(
             'amount' => $order_total,
-            'description' => 'Commande ' . $order->get_order_number() . ' - ' . get_bloginfo('name'),
-            'order_id' => $chapchap_order_id,
-            'notify_url' => $this->notify_url,
-            'return_url' => $this->get_return_url($order),
-            'cancel_url' => $order->get_cancel_order_url()
         );
 
         $headers = array(
